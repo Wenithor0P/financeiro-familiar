@@ -1,0 +1,124 @@
+{
+  "transactions": [
+    {
+      "id": 1768878611029,
+      "type": "income",
+      "description": "efd",
+      "amount": 22,
+      "date": "2026-01-22",
+      "category": "salario",
+      "timestamp": "2026-01-20T03:10:11.029Z"
+    },
+    {
+      "id": 1768874229662,
+      "type": "income",
+      "description": "sej",
+      "amount": 222,
+      "date": "2026-09-23",
+      "category": "salario",
+      "timestamp": "2026-01-20T01:57:09.662Z"
+    },
+    {
+      "id": 1768874176229,
+      "type": "expense",
+      "description": "gty",
+      "amount": 222,
+      "date": "2026-09-23",
+      "category": "alimentacao",
+      "timestamp": "2026-01-20T01:56:16.229Z"
+    },
+    {
+      "id": 1768870351656,
+      "type": "income",
+      "description": "sfr",
+      "amount": 22,
+      "date": "2026-01-20",
+      "category": "outros",
+      "timestamp": "2026-01-20T00:52:31.656Z"
+    },
+    {
+      "id": 1768870225526,
+      "type": "income",
+      "description": "diaira",
+      "amount": 600,
+      "date": "2026-01-20",
+      "category": "extra",
+      "timestamp": "2026-01-20T00:50:25.526Z"
+    },
+    {
+      "id": 1768870202122,
+      "type": "expense",
+      "description": "casa",
+      "amount": 800,
+      "date": "2026-01-20",
+      "category": "moradia",
+      "timestamp": "2026-01-20T00:50:02.122Z"
+    },
+    {
+      "id": 1768870181922,
+      "type": "expense",
+      "description": "nubank",
+      "amount": 222,
+      "date": "2026-01-20",
+      "category": "cartao",
+      "timestamp": "2026-01-20T00:49:41.922Z"
+    },
+    {
+      "id": 1768869846022,
+      "type": "expense",
+      "description": "mercado",
+      "amount": 222,
+      "date": "2026-01-20",
+      "category": "alimentacao",
+      "timestamp": "2026-01-20T00:44:06.022Z"
+    },
+    {
+      "id": 1768869816239,
+      "type": "income",
+      "description": "base",
+      "amount": 222,
+      "date": "2026-03-18",
+      "category": "salario",
+      "timestamp": "2026-01-20T00:43:36.239Z"
+    },
+    {
+      "id": 1768869776201,
+      "type": "income",
+      "description": "base",
+      "amount": 22,
+      "date": "2026-02-10",
+      "category": "salario",
+      "timestamp": "2026-01-20T00:42:56.201Z"
+    }
+  ],
+  "savingsGoals": [
+    {
+      "id": 1768881810787,
+      "name": "Fundo Emergencial ",
+      "target": 10000,
+      "current": 200,
+      "deadline": "2026-03-25",
+      "category": "emergencia",
+      "createdAt": "2026-01-20T04:03:30.787Z",
+      "contributionHistory": []
+    },
+    {
+      "id": 1768881978505,
+      "name": "Viagem ",
+      "target": 5000,
+      "current": 1600,
+      "deadline": "2026-03-31",
+      "category": "emergencia",
+      "createdAt": "2026-01-20T04:06:18.505Z",
+      "contributionHistory": [
+        {
+          "amount": 600,
+          "date": "2026-01-20T04:06:38.656Z",
+          "type": "contribution"
+        }
+      ]
+    }
+  ],
+  "timestamp": "2026-01-20T04:10:36.393Z",
+  "version": 1768882236393
+}
