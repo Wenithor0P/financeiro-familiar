@@ -981,6 +981,7 @@
             tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: CLIENT_ID,
                 scope: SCOPES,
+                redirect_uri: window.location.href,
                 callback: ''
             });
             gisInited = true;
