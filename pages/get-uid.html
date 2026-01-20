@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Descobrir UID Google</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <h1>Descobrir seu UID Google</h1>
+    <p>Clique no botão para fazer login e ver seu UID:</p>
+    
+    <div id="g_id_onload"
+         data-client_id="596035281552-naclvh0p7l3atg7tsk0l01ih0vk13g0n.apps.googleusercontent.com"
+         data-callback="handleSignIn"
+         data-auto_prompt="false">
+    </div>
+    
+    <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="rectangular"
+         data-logo_alignment="left">
+    </div>
+    
+    <div id="result" style="margin-top: 20px; padding: 20px; background: #f0f0f0; display: none;">
+        <h3>Seus Dados:</h3>
+        <p><strong>UID:</strong> <span id="uid"></span></p>
+        <p><strong>Nome:</strong> <span id="name"></span></p>
+        <p><strong>Email:</strong> <span id="email"></span></p>
+        <p><strong>Copie este UID para adicionar ao Firebase!</strong></p>
+    </div>
+
+    <script>
+        function handleSignIn(response) {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            
+            document.getElementById('uid').textContent = payload.sub;
+            document.getElementById('name').textContent = payload.name;
+            document.getElementById('email').textContent = payload.email;
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
