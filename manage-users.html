@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Usuários</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .user-card { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .add-form { background: #e8f5e8; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        button { background: #4285f4; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .remove-btn { background: #dc3545; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👥 Gerenciar Usuários</h1>
+        
+        <div id="g_id_onload"
+             data-client_id="596035281552-naclvh0p7l3atg7tsk0l01ih0vk13g0n.apps.googleusercontent.com"
+             data-callback="handleSignIn"
+             data-auto_prompt="false">
+        </div>
+        
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-text="sign_in_with"
+             data-shape="rectangular"
+             data-logo_alignment="left">
+        </div>
+        
+        <div id="management-area" style="display: none;">
+            <div class="add-form">
+                <h3>➕ Adicionar Novo Usuário</h3>
+                <input type="email" id="email-input" placeholder="Email da pessoa">
+                <input type="text" id="name-input" placeholder="Nome da pessoa">
+                <button onclick="addUser()">➕ Adicionar</button>
+            </div>
+            
+            <h3>📋 Usuários Cadastrados</h3>
+            <div id="users-list"></div>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Configuração Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBTMm33Yy7LAqd0fxnLjbbMkt-uh5FMTg0",
+            authDomain: "financeiro-app-23a0b.firebaseapp.com",
+            databaseURL: "https://financeiro-app-23a0b-default-rtdb.firebaseio.com",
+            projectId: "financeiro-app-23a0b",
+            storageBucket: "financeiro-app-23a0b.firebasestorage.app",
+            messagingSenderId: "613811321121",
+            appId: "1:613811321121:web:555e5487d75ac248aba660"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let currentUser = null;
+
+        function handleSignIn(response) {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            currentUser = payload;
+            
+            // Verificar se é admin
+            checkAdmin().then(isAdmin => {
+                if (isAdmin) {
+                    document.getElementById('management-area').style.display = 'block';
+                    loadUsers();
+                } else {
+                    document.getElementById('result').innerHTML = '<div style="color: red;">❌ Apenas administradores podem acessar esta página</div>';
+                }
+            });
+        }
+
+        async function checkAdmin() {
+            const adminSnapshot = await database.ref('admin').once('value');
+            const adminData = adminSnapshot.val();
+            return adminData && adminData.firstUserEmail === currentUser.email;
+        }
+
+        async function addUser() {
+            const email = document.getElementById('email-input').value.trim();
+            const name = document.getElementById('name-input').value.trim();
+            
+            if (!email) {
+                alert('❌ Digite um email');
+                return;
+            }
+
+            try {
+                const userKey = email.replace(/[.@]/g, '_') + '_' + Date.now();
+                
+                await database.ref('users/' + userKey).set({
+                    email: email,
+                    name: name,
+                    addedAt: Date.now(),
+                    addedBy: currentUser.email
+                });
+
+                alert(`✅ Usuário ${email} adicionado com sucesso!`);
+                
+                // Limpar formulário
+                document.getElementById('email-input').value = '';
+                document.getElementById('name-input').value = '';
+                
+                // Recarregar lista
+                loadUsers();
+                
+            } catch (error) {
+                alert(`❌ Erro: ${error.message}`);
+            }
+        }
+
+        async function removeUser(userKey, email) {
+            if (!confirm(`Remover ${email}?`)) return;
+            
+            try {
+                await database.ref('users/' + userKey).remove();
+                alert(`✅ ${email} removido com sucesso!`);
+                loadUsers();
+            } catch (error) {
+                alert(`❌ Erro: ${error.message}`);
+            }
+        }
+
+        async function loadUsers() {
+            const usersSnapshot = await database.ref('users').once('value');
+            const users = usersSnapshot.val() || {};
+            
+            const usersList = document.getElementById('users-list');
+            
+            if (Object.keys(users).length === 0) {
+                usersList.innerHTML = '<p style="color: #666;">Nenhum usuário cadastrado ainda</p>';
+                return;
+            }
+            
+            let html = '';
+            for (const key in users) {
+                const user = users[key];
+                html += `
+                    <div class="user-card">
+                        <div>
+                            <strong>${user.name}</strong><br>
+                            <small>${user.email}</small><br>
+                            <small>Adicionado por ${user.addedBy} em ${new Date(user.addedAt).toLocaleDateString()}</small>
+                        </div>
+                        <button class="remove-btn" onclick="removeUser('${key}', '${user.email}')">🗑️</button>
+                    </div>
+                `;
+            }
+            
+            usersList.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

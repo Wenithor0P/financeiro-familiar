@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Usuários - Firebase</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; padding: 20px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        button { background: #4285f4; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; width: 100%; }
+        button:hover { background: #3367d6; }
+        .success { color: green; margin: 10px 0; }
+        .error { color: red; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h2>👥 Adicionar Usuário no Firebase</h2>
+    
+    <input type="email" id="email" placeholder="Email do usuário">
+    <input type="text" id="name" placeholder="Nome">
+    
+    <button onclick="addUser()">➕ Adicionar Usuário</button>
+    
+    <div id="result"></div>
+
+    <script>
+        // Configuração Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBTMm33Yy7LAqd0fxnLjbbMkt-uh5FMTg0",
+            authDomain: "financeiro-app-23a0b.firebaseapp.com",
+            databaseURL: "https://financeiro-app-23a0b-default-rtdb.firebaseio.com",
+            projectId: "financeiro-app-23a0b",
+            storageBucket: "financeiro-app-23a0b.firebasestorage.app",
+            messagingSenderId: "613811321121",
+            appId: "1:613811321121:web:555e5487d75ac248aba660"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        async function addUser() {
+            const email = document.getElementById('email').value.trim();
+            const name = document.getElementById('name').value.trim();
+            const resultDiv = document.getElementById('result');
+
+            if (!email || !name) {
+                resultDiv.innerHTML = '<div class="error">❌ Preencha email e nome</div>';
+                return;
+            }
+
+            try {
+                // Adicionar usuário no Firebase Database
+                await database.ref('users/' + email.replace(/[.@]/g, '_')).set({
+                    email: email,
+                    name: name,
+                    addedAt: Date.now()
+                });
+
+                resultDiv.innerHTML = `<div class="success">✅ ${name} (${email}) adicionado com sucesso!</div>`;
+                
+                // Limpar campos
+                document.getElementById('email').value = '';
+                document.getElementById('name').value = '';
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Erro: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
