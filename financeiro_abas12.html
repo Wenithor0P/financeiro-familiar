@@ -981,8 +981,18 @@
             tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: CLIENT_ID,
                 scope: SCOPES,
-                redirect_uri: window.location.href,
-                callback: ''
+                callback: (tokenResponse) => {
+                    if (tokenResponse && tokenResponse.access_token) {
+                        isSignedIn = true;
+                        loadUserData().then(() => {
+                            hideLogin();
+                            showUserInfo();
+                            initializeApp();
+                        });
+                    } else {
+                        console.error('Token error:', tokenResponse);
+                    }
+                }
             });
             gisInited = true;
         }
@@ -998,17 +1008,6 @@
         
         // Funções de autenticação
         function handleLogin() {
-            tokenClient.callback = async (resp) => {
-                if (resp.error !== undefined) {
-                    throw (resp);
-                }
-                isSignedIn = true;
-                await loadUserData();
-                hideLogin();
-                showUserInfo();
-                initializeApp();
-            };
-            
             if (gapi.client.getToken() === null) {
                 tokenClient.requestAccessToken({prompt: 'consent'});
             } else {
